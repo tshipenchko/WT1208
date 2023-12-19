@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>06</title>
+</head>
+<body>
+
+<button id="start">Start</button>
+<button id="stop">Stop</button>
+<script>
+    const context = new AudioContext();
+    const createOscillator = () => {
+        let o = context.createOscillator();
+        o.type = "sine";
+        o.connect(context.destination);
+        return o;
+    }
+    let o = createOscillator();
+
+    document.getElementById("start").addEventListener("click", () => {
+        o.start();
+    })
+    document.getElementById("stop").addEventListener("click", () => {
+        o.stop();
+        o = createOscillator();
+    })
+</script>
+</body>
+</html>
