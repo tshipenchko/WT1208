@@ -1,0 +1,31 @@
+<%- include("_header") %>
+
+<div class="container">
+    <% if (typeof error !== "undefined" && error) { %>
+        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+            <%= error; %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <% } %>
+    <div class="row justify-content-center mt-2">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form action="/register" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("_footer") %>

@@ -9,7 +9,7 @@ const combinations = (str) => {
     }
 
     return combinations.join(", ");
-}
+};
 
 console.log(
     combinations("dog") // d, do, dog, o, og, g

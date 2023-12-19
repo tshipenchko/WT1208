@@ -6,8 +6,8 @@ const vowelCount = (str) => {
         if (vowels.includes(char)) acc++;
         return acc;
     }, 0);
-}
+};
 
 console.log(
-    vowelCount("The quick brown fox")  // 5
-)
+    vowelCount("The quick brown fox") // 5
+);

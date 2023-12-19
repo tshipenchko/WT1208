@@ -11,14 +11,13 @@ const currentTime = () => {
     const hoursFormatted = hours ? hours : 12;
     const minutesFormatted = minute < 10 ? `0${minute}` : minute;
     const secondsFormatted = second < 10 ? `0${second}` : second;
-    const dayFormatted = current.toLocaleDateString("en-US", {weekday: "long"});
+    const dayFormatted = current.toLocaleDateString("en-US", { weekday: "long" });
     return (
         `Today is: ${dayFormatted}. ` +
         `Current time is: ${hoursFormatted}${ampm}:${minutesFormatted}:${secondsFormatted}`
     );
-}
-
+};
 
 console.log(
     currentTime() // Today is: Tuesday. Current time is: 10PM:30:38
-)
+);
