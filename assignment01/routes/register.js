@@ -1,18 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const { hashPassword } = require("../auth");
+const { hashPassword, requireUnauthorized } = require("../auth");
 
 /** @param {DI} di */
 module.exports = (di) => {
     const options = { active: { register: true } };
 
     router.get("/", (req, res) => {
+        if (requireUnauthorized(res)) return;
         res.render("register", options);
     });
 
     // It uses browser's default form submission
     router.post("/", async (req, res) => {
+        if (requireUnauthorized(res)) return;
         const { email, password, username } = req.body;
         const { db } = di;
 

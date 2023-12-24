@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { hashPassword, comparePassword } = require("../auth");
+const { comparePassword, requireUnauthorized } = require("../auth");
 
 /** @param {DI} di */
 module.exports = (di) => {
     router.get("/", (req, res) => {
+        if (requireUnauthorized(res)) return;
         const options = {
             ref: req.query.ref || null,
         };
@@ -14,12 +15,11 @@ module.exports = (di) => {
     });
 
     router.post("/", async (req, res) => {
+        if (requireUnauthorized(res)) return;
         const { email, password } = req.body;
 
-        console.log(await hashPassword(password));
-
         const { rows } = await di.db.query(
-            "SELECT email, username, password FROM users WHERE email = $1 LIMIT 1",
+            "SELECT id, password FROM users WHERE email = $1 LIMIT 1",
             [email],
         );
         const user = rows[0];

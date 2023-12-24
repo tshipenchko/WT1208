@@ -6,6 +6,7 @@ const express = require("express");
 const pg = require("pg");
 
 const routes = require("./routes");
+const { attachUser } = require("./auth");
 
 function panic(message) {
     console.error(message);
@@ -34,6 +35,7 @@ async function main() {
 
     /** @type {DI} */
     const di = { db };
+    app.use(attachUser(di));
     routes.register(app, di);
     await init(di);
 
