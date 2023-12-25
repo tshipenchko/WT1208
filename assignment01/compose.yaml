@@ -1,7 +1,22 @@
 version: "3.8"
 
 services:
+  app:
+    restart: on-failure
+    build: .
+    environment:
+      - POSTGRES_DSN=postgres://postgres@postgres:5432/postgres?sslmode=disable
+      - SESSION_SECRET=${SESSION_SECRET:-secret}
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
+    restart: on-failure
     image: postgres:15
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
@@ -9,6 +24,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
 
 volumes:
   postgres_data:
