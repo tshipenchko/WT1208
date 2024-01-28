@@ -4,65 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Widget Application</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin="" />
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        .weather-container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-        }
-
-        .weather-container .form {
-            margin-bottom: 10px;
-        }
-        .weather-container .form div {
-            display: flex;
-            flex: 1;
-            flex-direction: row;
-            margin-bottom: 5px;
-        }
-
-        .weather-container .form div input {
-            flex-grow: 1;
-            margin-right: 5px;
-        }
-
-        .weather-container .form div label {
-            margin-right: 5px;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        p {
-            margin: 10px 0;
-            color: #555;
-        }
-
-        img {
-            width: 50px;
-            height: 50px;
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -83,17 +30,21 @@
 
     <section>
         <strong>Weather Information</strong>
-        <p>Temperature: <%= weatherData.temperature %> &deg;C</p>
-        <p>Description: <%= weatherData.description %></p>
-        <img src="https://openweathermap.org/img/w/<%= weatherData.icon %>.png" alt="Weather Icon">
-
-        <p>Coordinates: <%= weatherData.coordinates.lat %>, <%= weatherData.coordinates.lon %></p>
-        <div id="map" style="height: 300px; overflow: hidden"></div>
-        <p>Feels Like: <%= weatherData.feelsLike %> &deg;C</p>
-        <p>Humidity: <%= weatherData.humidity %>%</p>
-        <p>Pressure: <%= weatherData.pressure %> hPa</p>
-        <p>Wind Speed: <%= weatherData.windSpeed %> m/s</p>
-        <p>Country Code: <%= weatherData.countryCode %></p>
+        <% if (weatherData) { %>
+            <p>Temperature: <%= weatherData.temperature %> &deg;C</p>
+            <p>Feels Like: <%= weatherData.feelsLike %> &deg;C</p>
+            <p>Description: <%= weatherData.description %></p>
+            <img src="https://openweathermap.org/img/w/<%= weatherData.icon %>.png" alt="Weather Icon">
+            <p>Coordinates: <%= weatherData.coordinates.lat %>, <%= weatherData.coordinates.lon %></p>
+            <div id="map"></div>
+            <p>Humidity: <%= weatherData.humidity %>%</p>
+            <p>Pressure: <%= weatherData.pressure %> hPa</p>
+            <p>Wind Speed: <%= weatherData.windSpeed %> m/s</p>
+            <p>Rain Volume: <%= weatherData.rainVolume %> mm</p>
+            <p>Country Code: <%= weatherData.countryCode %></p>
+        <% } else { %>
+            <p>Weather Information: Unavailable</p>
+        <% } %>
     </section>
 
     <section>
@@ -108,11 +59,11 @@
         </p>
     </section>
 
-    <section>
+    <section id="quote">
         <strong>Quote of the Day</strong>
         <% if (quoteData) { %>
-            <div style="display: flex; justify-content: center">
-                <p style="width: 300px;">
+            <div>
+                <p>
                     <%= quoteData.quote %>
                 </p>
             </div>
@@ -123,16 +74,19 @@
     </section>
 </section>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
-<script>
-    var map = L.map("map").setView([<%= weatherData.coordinates.lat %>, <%= weatherData.coordinates.lon %>], 10);
+<% if (weatherData) { %>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script>
+        var map = L.map("map").setView([<%= weatherData.coordinates.lat %>, <%= weatherData.coordinates.lon %>], 10);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
-    }).addTo(map);
-</script>
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "© OpenStreetMap contributors",
+        }).addTo(map);
+    </script>
+<% } %>
+
 </body>
 
 </html>

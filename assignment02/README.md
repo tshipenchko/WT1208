@@ -1,21 +1,16 @@
-# assigment01
-Useless website with authentication and a database
+# assigment02
 
-### docker (recommended)
-Copy `dist.env` to `.env` and fill in the values.
-</br>
-Actually you can run without the .env file, but you should at least change `SESSION_SECRET` in `.env`
-```commandline
-docker-compose up
-```
+Useless widget application
 
 ### local
+
 Copy `dist.env` to `.env` and fill in the values
 </br>
-You have to run PostgreSQL on your own
+You have to obtain [OpenWeatherMap API key](https://openweathermap.org/api) and provide it in the .env file
 </br>
 You absolutely need to provide a `SESSION_SECRET` and `POSTGRES_DSN` in the .env file
+
 ```commandline
-npm install
+npm clean-install
 npm start
 ```

@@ -8,10 +8,11 @@ router.get("/", async (req, res) => {
     const currencyTo = (req.query.currencyTo || "KZT").toLowerCase();
 
     try {
-        const weatherData = await getWeatherData(city);
-        const currencyData = await getCurrencyData(currencyFrom, currencyTo);
-        const quoteData = await getQuoteData();
-
+        const [weatherData, currencyData, quoteData] = await Promise.all([
+            getWeatherData(city),
+            getCurrencyData(currencyFrom, currencyTo),
+            getQuoteData(),
+        ]);
         res.render("index", {
             city,
             weatherData,
@@ -29,30 +30,37 @@ const register = (app) => {
     app.use("/", router);
 };
 
-
 const { OPENWEATHERMAP_TOKEN } = process.env;
 const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?appid=${OPENWEATHERMAP_TOKEN}`;
 
 const getWeatherData = async (city) => {
-    const data = await (await fetch(`${WEATHER_URL}&q=${city}`)).json();
+    const response = await fetch(`${WEATHER_URL}&q=${city}`);
+    if (!response.ok) {
+        return undefined;
+    }
+    const data = await response.json();
     // noinspection JSUnresolvedReference
     return {
         temperature: (data.main.temp - 273.15).toFixed(2),
         description: data.weather[0].description,
         icon: data.weather[0].icon,
         coordinates: data.coord,
-        feelsLike: data.main.feels_like,
+        feelsLike: (data.main.feels_like - 273.15).toFixed(2),
         humidity: data.main.humidity,
         pressure: data.main.pressure,
         windSpeed: data.wind.speed,
+        rainVolume: data.rain ? data.rain["1h"] : 0,
         countryCode: data.sys.country,
     };
 };
 
-const CURRENCY_URL = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
+const CURRENCY_URL =
+    "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
 
 const getCurrencyData = async (currencyFrom, currencyTo) => {
-    const response = await fetch(`${CURRENCY_URL}/${currencyFrom}/${currencyTo}.json`);
+    const response = await fetch(
+        `${CURRENCY_URL}/${currencyFrom}/${currencyTo}.json`,
+    );
 
     if (!response.ok) {
         return undefined;
@@ -62,10 +70,8 @@ const getCurrencyData = async (currencyFrom, currencyTo) => {
 };
 
 const getQuoteData = async () => {
-    const date = (new Date()).toDateString().replaceAll(" ", "");
+    const date = new Date().toDateString().replaceAll(" ", "");
     const response = await fetch(`https://zenquotes.io/api/today/${date}`);
-    console.log(`https://zenquotes.io/api/today/${date}`);
-    console.log(response);
 
     if (!response.ok) {
         return undefined;
@@ -73,6 +79,5 @@ const getQuoteData = async () => {
     const data = await response.json();
     return { quote: data[0].q, author: data[0].a };
 };
-
 
 module.exports = { register };

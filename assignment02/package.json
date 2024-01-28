@@ -1,17 +1,12 @@
 {
-  "name": "assignment01",
+  "name": "assignment02",
   "version": "1.0.0",
-  "description": "Simple registration & login with NodeJS & PostgreSQL",
+  "description": "Simple Widget Application",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "format": "prettier --write \"**/*.js\""
   },
-  "keywords": [
-    "auth",
-    "postgres",
-    "docker"
-  ],
   "author": "_",
   "license": "MIT",
   "dependencies": {
