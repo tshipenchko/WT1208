@@ -30,9 +30,9 @@ const register = (app) => {
     app.use("/", router);
 };
 
+
 const { OPENWEATHERMAP_TOKEN } = process.env;
 const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?appid=${OPENWEATHERMAP_TOKEN}`;
-
 const getWeatherData = async (city) => {
     const response = await fetch(`${WEATHER_URL}&q=${city}`);
     if (!response.ok) {
@@ -54,9 +54,8 @@ const getWeatherData = async (city) => {
     };
 };
 
-const CURRENCY_URL =
-    "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
 
+const CURRENCY_URL = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
 const getCurrencyData = async (currencyFrom, currencyTo) => {
     const response = await fetch(
         `${CURRENCY_URL}/${currencyFrom}/${currencyTo}.json`,
@@ -69,9 +68,11 @@ const getCurrencyData = async (currencyFrom, currencyTo) => {
     return { rate: data[currencyTo].toFixed(2) };
 };
 
+
+const QUOTE_URL = "https://zenquotes.io/api/today";
 const getQuoteData = async () => {
     const date = new Date().toDateString().replaceAll(" ", "");
-    const response = await fetch(`https://zenquotes.io/api/today/${date}`);
+    const response = await fetch(`${QUOTE_URL}/${date}`);
 
     if (!response.ok) {
         return undefined;
