@@ -78,6 +78,10 @@ const getExtendedWeatherData = async (city) => {
         if (!uniqueDates[day.date]) {
             uniqueDates[day.date] = true;
             uniqueResult.push(day);
+        } else if (day.temperatureMax > uniqueResult[uniqueResult.length - 1].temperatureMax) {
+            uniqueResult[uniqueResult.length - 1].temperatureMax = day.temperatureMax;
+        } else if (day.temperatureMin < uniqueResult[uniqueResult.length - 1].temperatureMin) {
+            uniqueResult[uniqueResult.length - 1].temperatureMin = day.temperatureMin;
         }
     }
     return uniqueResult;
