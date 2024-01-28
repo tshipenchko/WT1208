@@ -45,6 +45,19 @@
         <% } else { %>
             <p>Weather Information: Unavailable</p>
         <% } %>
+
+        <% if (extendedWeatherData) { %>
+            <details>
+                <summary>6 Day Forecast</summary>
+                <% extendedWeatherData.forEach(day => { %>
+                    <details>
+                        <summary><%= day.date %></summary>
+                        <p>Max Temperature: <%= day.temperatureMax %>°C</p>
+                        <p>Min Temperature: <%= day.temperatureMin %>°C</p>
+                    </details>
+                <% }) %>
+            </details>
+        <% } %>
     </section>
 
     <section>

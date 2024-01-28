@@ -60,3 +60,8 @@ img {
 #quote div p {
     width: 300px;
 }
+
+/* Click icon on hover to details summary*/
+summary:hover {
+    cursor: pointer;
+}

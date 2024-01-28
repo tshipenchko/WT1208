@@ -8,10 +8,11 @@ router.get("/", async (req, res) => {
     const currencyTo = (req.query.currencyTo || "KZT").toLowerCase();
 
     try {
-        const [weatherData, currencyData, quoteData] = await Promise.all([
+        const [weatherData, currencyData, quoteData, extendedWeatherData] = await Promise.all([
             getWeatherData(city),
             getCurrencyData(currencyFrom, currencyTo),
             getQuoteData(),
+            getExtendedWeatherData(city),
         ]);
         res.render("index", {
             city,
@@ -20,9 +21,11 @@ router.get("/", async (req, res) => {
             currencyFrom,
             currencyTo,
             quoteData,
+            extendedWeatherData,
         });
     } catch (err) {
         res.send(`Internal Server Error: ${err}`);
+        console.error(err);
     }
 });
 
@@ -52,6 +55,32 @@ const getWeatherData = async (city) => {
         rainVolume: data.rain ? data.rain["1h"] : 0,
         countryCode: data.sys.country,
     };
+};
+
+const EXTENDED_WEATHER_URL = `https://api.openweathermap.org/data/2.5/forecast?appid=${OPENWEATHERMAP_TOKEN}`;
+const getExtendedWeatherData = async (city) => {
+    const response = await fetch(`${EXTENDED_WEATHER_URL}&q=${city}`);
+
+    if (!response.ok) {
+        return undefined;
+    }
+    const data = await response.json();
+    // noinspection JSUnresolvedReference
+    const result = data.list.map(day => ({
+        date: new Date(day.dt * 1000).toDateString(),
+        temperatureMax: (day.main.temp_max - 273.15).toFixed(2),
+        temperatureMin: (day.main.temp_min - 273.15).toFixed(2),
+    }));
+
+    const uniqueDates = {};
+    const uniqueResult = [];
+    for (const day of result) {
+        if (!uniqueDates[day.date]) {
+            uniqueDates[day.date] = true;
+            uniqueResult.push(day);
+        }
+    }
+    return uniqueResult;
 };
 
 
