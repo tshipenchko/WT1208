@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  app:
+    restart: on-failure
+    build: .
+    environment:
+      - MONGODB_DSN=mongodb://mongodb:27017
+      - SESSION_SECRET=${SESSION_SECRET:-secret}
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  mongodb:
+    restart: on-failure
+    image: mongo:5
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: [ "CMD-SHELL", "mongo --eval \"db.adminCommand('ping')\"" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+
+volumes:
+  mongodb_data:
