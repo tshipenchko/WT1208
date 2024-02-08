@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { ObjectId } from "mongodb";
 
 /**
  * @param {import("mongodb").Db} db
@@ -19,7 +20,7 @@ export default (db) => {
 
     router.get("/posts/:id", async (req, res) => {
         const { id } = req.params;
-        const result = await posts.findOne({ _id: id });
+        const result = await posts.findOne({ _id: new ObjectId(id) });
         if (result === null) {
             res.status(404).json({ error: "Not found" });
         } else {
@@ -53,7 +54,7 @@ export default (db) => {
             return;
         }
 
-        const result = await posts.updateOne({ _id: id }, { $set: toUpdate });
+        const result = await posts.updateOne({ _id: new ObjectId(id) }, { $set: toUpdate });
         if (result.matchedCount === 0) {
             res.status(404).json({ error: "Not found" });
         } else {
@@ -64,7 +65,7 @@ export default (db) => {
     // Delete
     router.delete("/posts/:id", async (req, res) => {
         const { id } = req.params;
-        const result = await posts.deleteOne({ _id: id });
+        const result = await posts.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 0) {
             res.status(404).json({ error: "Not found" });
         } else {
