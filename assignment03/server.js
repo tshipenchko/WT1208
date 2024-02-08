@@ -7,6 +7,7 @@ export default async () => {
     const db = await createDB();
     const router = createRouter(db);
 
+    app.use(express.static("public"));
     app.use(express.json());
     app.use(router);
 
