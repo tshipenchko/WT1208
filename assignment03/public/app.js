@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const prevPageButton = document.getElementById("prev-page");
     const nextPageButton = document.getElementById("next-page");
 
+    // noinspection JSUnresolvedReference
+    const bsModal = new bootstrap.Modal(document.getElementById("update-modal"));
+
     let currentPage = 1;
 
     form.addEventListener("submit", handleFormSubmit);
@@ -89,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 modal.querySelector("form").dataset.id = postId;
 
                 // noinspection JSUnresolvedReference
-                new bootstrap.Modal(modal).show();
+                bsModal.show()
             });
         });
     }
@@ -113,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.ok) {
             // noinspection JSUnresolvedReference
-            new bootstrap.Modal(modal).hide();
+            bsModal.hide();
             fetchPosts().then();
         }
     });
