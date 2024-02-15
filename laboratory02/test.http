@@ -1,0 +1,37 @@
+### Create Tasks
+POST {{base_url}}/tasks
+Content-Type: application/json
+
+{
+  "description": "Hello world!",
+  "completed": false
+}
+
+> {%
+    client.test("Set variable", function() {
+        client.global.set("task_id", pm.response.json().id);
+    });
+%}
+
+### Get All Tasks
+GET {{base_url}}/tasks
+
+### Update Task
+PUT {{base_url}}/tasks/{{task_id}}
+Content-Type: application/json
+
+{
+  "completed": true
+}
+
+### Get Task by ID
+GET {{base_url}}/tasks/{{task_id}}
+
+### Get Task by ID
+GET {{base_url}}/tasks/{{task_id}}
+
+### Delete Task
+DELETE {{base_url}}/tasks/{{task_id}}
+
+### Get Task by ID
+GET {{base_url}}/tasks/{{task_id}}
