@@ -3,20 +3,18 @@ POST {{base_url}}/tasks
 Content-Type: application/json
 
 {
+  "title": "My first task",
   "description": "Hello world!",
   "completed": false
 }
-
-> {%
-    client.test("Set variable", function() {
-        client.global.set("task_id", pm.response.json().id);
-    });
-%}
 
 ### Get All Tasks
 GET {{base_url}}/tasks
 
 ### Update Task
+< {%
+    request.variables.set("task_id", "")
+%}
 PUT {{base_url}}/tasks/{{task_id}}
 Content-Type: application/json
 
@@ -25,13 +23,25 @@ Content-Type: application/json
 }
 
 ### Get Task by ID
+< {%
+    request.variables.set("task_id", "")
+%}
 GET {{base_url}}/tasks/{{task_id}}
 
 ### Get Task by ID
+< {%
+    request.variables.set("task_id", "")
+%}
 GET {{base_url}}/tasks/{{task_id}}
 
 ### Delete Task
+< {%
+    request.variables.set("task_id", "")
+%}
 DELETE {{base_url}}/tasks/{{task_id}}
 
 ### Get Task by ID
+< {%
+    request.variables.set("task_id", "")
+%}
 GET {{base_url}}/tasks/{{task_id}}
