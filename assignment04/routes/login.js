@@ -4,11 +4,14 @@ const User = require("../models/User");
 const { validatePassword } = require("../utils");
 
 router.get("/", (req, res) => {
-    const { registered } = req.query;
+    const { registered, expired } = req.query;
     const ctx = { alerts: [] };
 
     if (typeof registered !== "undefined") {
         ctx.alerts.push({ type: "success", html: "You have been registered!" });
+    }
+    if (typeof expired !== "undefined") {
+        ctx.alerts.push({ type: "warning", html: "Your session has expired. Please log in again." });
     }
 
     res.render("login", { ctx });

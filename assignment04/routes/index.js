@@ -6,5 +6,6 @@ module.exports = {
         app.use("/users", require("./users"));
         app.use("/login", require("./login"));
         app.use("/register", require("./register"));
+        app.use("/logout", require("./logout"));
     },
 };

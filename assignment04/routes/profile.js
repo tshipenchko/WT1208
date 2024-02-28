@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const { requireUser } = require("../models/utils");
 
 router.get("/", (req, res) => {
-    if (!req.session.userId) {
-        res.redirect("/login/");
-        return;
-    }
+    const user = requireUser(req, res);
+    if (!user) return;
 
-    res.render("profile", {ctx: { active: "profile" }});
+    res.render("profile", { ctx: { active: "profile" } });
 });
 
 module.exports = router;

@@ -1,0 +1,11 @@
+<%- include("_partial/header.ejs") %>
+
+<div class="container mt-5">
+    <h1>Logout</h1>
+    <p>Are you sure you want to log out? Goodbye, <%= ctx.user.firstName ;%> <%= ctx.user.lastName ;%>.</p>
+    <form action="/logout/" method="post">
+        <button type="submit" class="btn btn-primary">Confirm Logout</button>
+    </form>
+</div>
+
+<%- include("_partial/footer.ejs") %>

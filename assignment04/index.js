@@ -17,6 +17,7 @@ app.use(
     session({
         secret: requireEnv("SESSION_SECRET", "₍^ >ヮ<^₎"),
         resave: false,
+        secure: true,
         saveUninitialized: true,
     }),
 );
