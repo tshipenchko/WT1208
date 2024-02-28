@@ -1,6 +1,6 @@
 <!--hacks -->
 <!--suppress JSUnresolvedLibraryURL -->
-<% if (typeof ctx === 'undefined') ctx = {} %>
+<% if (typeof ctx === "undefined") ctx = { active: undefined, alerts: undefined }; %>
 
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
@@ -17,9 +17,9 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<%  const navAttrs = (current) => { %>
+<% const navAttrs = (current) => { %>
     <% return current === ctx.active ? `class="nav-link active" aria-current="page"` : `class="nav-link"`; %>
-<% } %>
+<% }; %>
 
 <nav class="navbar navbar-expand-sm bg-body-tertiary">
     <div class="container">
@@ -31,15 +31,35 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav nav-underline w-100">
                 <li class="nav-item">
-                    <a <%- navAttrs("root") %> href="/">Home</a>
+                    <a <%- navAttrs("root"); %> href="/">Home</a>
                 </li>
                 <li class="nav-item mx-auto">
-                    <a <%- navAttrs("explore") %> href="/explore/"><i class="bi bi-search"></i> Explore</a>
+                    <a <%- navAttrs("explore"); %> href="/explore/"><i class="bi bi-search"></i> Explore</a>
                 </li>
                 <li class="nav-item">
-                    <a <%- navAttrs("profile") %> href="/profile/">Profile</a>
+                    <a <%- navAttrs("profile"); %> href="/profile/">Profile</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<div class="position-absolute top-0 end-0 m-3 pt-5">
+    <% if (ctx.alerts) { %>
+        <% ctx.alerts.forEach((alert, index) => { %>
+            <div id="alert-<%= index; %>" class="alert alert-<%= alert.type; %> alert-dismissible fade show mt-3"
+                 role="alert">
+                <%= alert.html; %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <script>
+                setTimeout(() => {
+                    const alertElement = document.getElementById('alert-<%= index; %>');
+                    // noinspection JSUnresolvedReference
+                    const bsAlert = new bootstrap.Alert(alertElement);
+                    bsAlert.close();
+                }, <%= (alert.timeout || 3000) + index * 1000; %>);
+            </script>
+        <% }); %>
+    <% } %>
+</div>

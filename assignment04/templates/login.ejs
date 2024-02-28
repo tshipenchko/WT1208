@@ -1,0 +1,23 @@
+<%- include("_partial/header.ejs") %>
+
+<div class="container mt-5">
+    <h1>Login</h1>
+    <div class="card" style="max-width: 768px; margin: auto;">
+        <div class="card-body">
+            <form action="/login/" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <p class="text-center text-muted mt-1">Don't have an account? <a href="/register/">Register</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("_partial/footer.ejs") %>

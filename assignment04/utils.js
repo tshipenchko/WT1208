@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 module.exports = {
     requireEnv(name, defaultValue) {
         const value = process.env[name] || defaultValue;
@@ -12,5 +14,14 @@ module.exports = {
             throw new Error(`Environment variable ${name} must be an integer`);
         }
         return value;
+    },
+    async hashPassword(password) {
+        const salt = module.exports.requireEnv("PASSWORD_SALT", "");
+        const rounds = module.exports.requireEnvInt("PASSWORD_SALT_ROUNDS", 10);
+        return await bcrypt.hash(`${password}${salt}`, rounds);
+    },
+    async validatePassword(password, hash) {
+        const salt = module.exports.requireEnv("PASSWORD_SALT", "");
+        return await bcrypt.compare(`${password}${salt}`, hash);
     },
 };

@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const session = require("express-session");
 const mongoose = require("mongoose");
 const { requireEnv, requireEnvInt } = require("./utils");
 const { useRouter } = require("./routes");
@@ -12,7 +13,13 @@ app.use(express.json());
 app.set("views", __dirname + "/templates");
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-
+app.use(
+    session({
+        secret: requireEnv("SESSION_SECRET", "₍^ >ヮ<^₎"),
+        resave: false,
+        saveUninitialized: true,
+    }),
+);
 useRouter(app);
 
 // noinspection JSUnresolvedReference
