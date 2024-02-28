@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const { requireEnv, requireEnvInt } = require("./utils");
+const { useRouter } = require("./routes");
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(express.json());
 app.set("views", __dirname + "/templates");
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
+
+useRouter(app);
 
 // noinspection JSUnresolvedReference
 mongoose.connect(requireEnv("MONGODB_URI"));
