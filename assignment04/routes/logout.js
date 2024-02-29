@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { requireUser } = require("../models/utils");
 
 router.get("/", async (req, res) => {
-    const user = requireUser(req, res);
+    const user = await requireUser(req, res);
     if (!user) return;
 
     res.render("logout", { ctx: { user } });
@@ -12,6 +12,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     req.session.destroy();
+    res.clearCookie("connect.sid");
     res.redirect("/login");
 });
 

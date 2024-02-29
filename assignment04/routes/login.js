@@ -2,8 +2,14 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const { validatePassword } = require("../utils");
+const { fetchUser } = require("../models/utils");
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+    if (await fetchUser(req)) {
+        res.redirect("/profile/");
+        return;
+    }
+
     const { registered, expired } = req.query;
     const ctx = { alerts: [] };
 
