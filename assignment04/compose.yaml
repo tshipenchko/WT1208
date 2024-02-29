@@ -2,17 +2,16 @@ version: "3.8"
 
 services:
   app:
-    profiles:
-      - never
     restart: on-failure
     build: .
     environment:
-      - MONGODB_DSN=mongodb://mongodb:27017
-      - SESSION_SECRET=${SESSION_SECRET:-secret}
+      - MONGODB_URI=mongodb://mongodb:27017
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
+      - ./uploads:/usr/src/app/uploads
     depends_on:
       mongodb:
         condition: service_healthy
