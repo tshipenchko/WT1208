@@ -33,6 +33,15 @@
                     <h5 class="card-title"><%= portfolio.title; %></h5>
                     <p class="card-text"><%= portfolio.description; %></p>
                     <a href="/portfolios/<%= portfolio.tag; %>" class="btn btn-primary">View Portfolio</a>
+
+                    <!-- Delete button. Will do the request and reload page to /profile/?deleted=true -->
+                    <button type="button" class="btn btn-danger" onclick="fetch('/portfolios/<%= portfolio._id; %>', {
+                            method: 'DELETE',
+                            }).then(() => {
+                            window.location.href = '/profile/?deleted=true';
+                            })">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
                 </div>
             </div>
         </div>

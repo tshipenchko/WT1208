@@ -18,6 +18,25 @@ router.get("/:tag", async (req, res) => {
     res.render("portfolio", { ctx: { portfolio, user: portfolio.userId } });
 });
 
+router.delete("/:id", async (req, res) => {
+    const user = await requireUser(req, res);
+    if (!user) return;
+
+    const portfolio = await Portfolio.findById(req.params.id);
+    if (!portfolio) {
+        res.status(404).send("Portfolio not found");
+        return;
+    }
+
+    if (portfolio.userId.toString() !== user._id.toString()) {
+        res.status(403).send("You are not authorized to delete this portfolio");
+        return;
+    }
+
+    await Portfolio.deleteOne({ _id: portfolio._id }).exec();
+    res.send("OK");
+});
+
 router.post("/", async (req, res) => {
     const user = await requireUser(req, res);
     if (!user) return;

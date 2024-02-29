@@ -7,9 +7,16 @@ router.get("/", async (req, res) => {
     const user = await requireUser(req, res);
     if (!user) return;
 
-    const portfolios = await Portfolio.find({ userId: user._id });
+    const ctx = { active: "profile", user, alerts: [] };
+    const { deleted } = req.query;
 
-    res.render("profile", { ctx: { active: "profile", portfolios, user } });
+    if (typeof deleted !== "undefined") {
+        ctx.alerts.push({ type: "success", html: "Portfolio was deleted successfully" });
+    }
+
+    ctx.portfolios = await Portfolio.find({ userId: user._id });
+
+    res.render("profile", { ctx });
 });
 
 module.exports = router;
