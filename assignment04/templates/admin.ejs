@@ -1,0 +1,115 @@
+<%- include("_partial/header.ejs") %>
+
+<div class="container mt-5">
+    <h1>Admin Panel</h1>
+    <hr>
+    <div id="usersSection">
+        <h2>Users</h2>
+        <div id="usersList"></div>
+    </div>
+    <hr>
+    <div id="portfoliosSection">
+        <h2>Portfolios</h2>
+        <div id="portfoliosList"></div>
+    </div>
+</div>
+
+<script>
+    const currentUserId = "<%= user._id; %>";
+
+    function fetchDataAndRender(url, renderFunction, containerId) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = data.map(renderFunction).join('');
+            })
+            .catch(error => alert(error));
+    }
+
+    function renderUser(user) {
+        let roleButton = '';
+        if (user.role === 'admin') {
+            roleButton = `<button class="btn btn-warning" onclick="changeRole('${user._id}', 'user')">Make User</button>`;
+        } else if (user.role === 'user') {
+            roleButton = `<button class="btn btn-warning" onclick="changeRole('${user._id}', 'admin')">Make Admin</button>`;
+        }
+
+        return `
+            <div class="user">
+                <h3>${user.firstName} ${user.lastName}</h3>
+                <p>Email: ${user.email}</p>
+                <p>Role: ${user.role}</p>
+                <button class="btn btn-danger" onclick="deleteUser('${user._id}')">Delete</button>
+                ${roleButton}
+            </div>
+        `;
+    }
+
+    function renderPortfolio(portfolio) {
+        return `
+            <div class="mt-3">
+                <h3><a href="/portfolios/${portfolio.tag}">${portfolio.title}</a></h3>
+                <p>
+                    tag: ${portfolio.tag} <br>
+                    description: ${portfolio.description}
+                </p>
+                <button class="btn btn-danger" onclick="deletePortfolio('${portfolio._id}')">Delete</button>
+            </div>
+        `;
+    }
+
+    function changeRole(userId, newRole) {
+        if (userId === currentUserId) {
+            alert('You should not change your own role. You will loose access to the admin panel.');
+            return;
+        }
+
+        fetch(`/admin/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ role: newRole }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                location.reload();
+            })
+            .catch(error => {
+                alert(`An error occurred: ${error}`);
+            });
+    }
+
+    function deleteUser(userId) {
+        if (userId === currentUserId) {
+            alert('You should not delete your own account. You will loose access to the admin panel.');
+            return;
+        }
+
+        fetch(`/admin/users/${userId}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            })
+            .catch(error => alert(error));
+    }
+
+    function deletePortfolio(portfolioId) {
+        fetch(`/admin/portfolios/${portfolioId}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            })
+            .catch(error => alert(error));
+    }
+
+    fetchDataAndRender('/admin/users', renderUser, 'usersList');
+    fetchDataAndRender('/admin/portfolios', renderPortfolio, 'portfoliosList');
+</script>
+
+<%- include("_partial/footer.ejs") %>
