@@ -60,4 +60,46 @@ router.post("/", async (req, res) => {
     res.redirect(`/portfolios/${portfolio._id}`);
 });
 
+router.get("/:id/edit", async (req, res) => {
+    const user = await requireUser(req, res);
+    if (!user) return;
+
+    const portfolio = await Portfolio.findById(req.params.id);
+    if (!portfolio) {
+        res.status(404).send("Portfolio not found");
+        return;
+    }
+
+    if (portfolio.userId.toString() !== user._id.toString()) {
+        res.status(403).send("You are not authorized to edit this portfolio");
+        return;
+    }
+
+    res.render("editPortfolio", { ctx: { portfolio } });
+});
+
+router.put("/:id", async (req, res) => {
+    const user = await requireUser(req, res);
+    if (!user) return;
+
+    const { title, description, tag } = req.body;
+
+    try {
+        const portfolio = await Portfolio.findById(req.params.id);
+        if (!portfolio) {
+            res.status(404).send("Portfolio not found");
+            return;
+        }
+
+        portfolio.title = title;
+        portfolio.description = description;
+        portfolio.tag = tag;
+
+        await portfolio.save();
+        res.json({ portfolio });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 module.exports = router;

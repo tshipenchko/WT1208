@@ -1,0 +1,55 @@
+<%- include("_partial/header.ejs") %>
+
+<div class="container mt-5">
+    <h1>Edit Portfolio</h1>
+    <form id="editPortfolioForm" action="/portfolios/<%= ctx.portfolio._id; %>" method="post"
+          enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="<%= ctx.portfolio.title; %>"
+                   required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description"
+                      required><%= ctx.portfolio.description; %></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="tag" class="form-label">Tag</label>
+            <input type="text" class="form-control" id="tag" name="tag" value="<%= ctx.portfolio.tag; %>" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('editPortfolioForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const portfolioId = '<%= ctx.portfolio._id; %>';
+
+        fetch(`/portfolios/${portfolioId}`, {
+            method: 'PUT',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                window.location.href = `/portfolios/${data.portfolio.tag}`;
+            })
+            .catch(error => {
+                alert(`An error occurred: ${error}`);
+            });
+    });
+</script>
+
+<%- include("_partial/footer.ejs") %>
