@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const { hashPassword } = require("../utils");
+const { sendEmail } = require("../emailer");
 
 router.get("/", (req, res) => {
     const { fromLoginPage } = req.query;
@@ -37,6 +38,10 @@ router.post("/", async (req, res) => {
     password = await hashPassword(password);
     const user = new User({ email, password, firstName, lastName, country, gender });
     await user.save();
+
+    sendEmail(email, "Welcome to our platform",
+        `<h3>Welcome ${firstName}! You have successfully registered to our platform.</h3>`,
+    );
 
     res.redirect("/login/?registered=true");
 });
