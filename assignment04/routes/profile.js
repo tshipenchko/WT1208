@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { requireUser } = require("../models/utils");
+const User = require("../models/User");
 const Portfolio = require("../models/Portfolio");
+const { sendEmail } = require("../emailer");
 
 router.get("/", async (req, res) => {
     const user = await requireUser(req, res);
@@ -36,6 +38,22 @@ router.post("/edit", async (req, res) => {
 
     await user.save();
     res.redirect("/profile/");
+});
+
+router.get("/delete", async (req, res) => {
+    const user = await requireUser(req, res);
+    if (!user) return;
+
+    await User.deleteOne({ _id: user._id });
+    await Portfolio.deleteMany({ userId: user._id });
+
+    sendEmail(user.email, "Your account has been deleted",
+        `<h3>We're sorry to see you go, ${user.firstName} ${user.lastName}. Your account has been successfully deleted.</h3>`,
+    );
+
+    req.session.destroy();
+    res.clearCookie("connect.sid");
+    res.redirect("/login");
 });
 
 module.exports = router;
