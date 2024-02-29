@@ -19,4 +19,23 @@ router.get("/", async (req, res) => {
     res.render("profile", { ctx });
 });
 
+router.get("/edit", async (req, res) => {
+    const user = await requireUser(req, res);
+    if (!user) return;
+    res.render("editProfile", { ctx: { user } });
+});
+
+router.post("/edit", async (req, res) => {
+    const user = await requireUser(req, res);
+    if (!user) return;
+
+    const { firstName, lastName, email } = req.body;
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.email = email;
+
+    await user.save();
+    res.redirect("/profile/");
+});
+
 module.exports = router;
