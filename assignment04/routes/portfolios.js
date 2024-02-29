@@ -99,6 +99,7 @@ router.put("/:id", async (req, res) => {
         portfolio.title = title;
         portfolio.description = description;
         portfolio.tag = tag;
+        portfolio.updateDate = new Date();
 
         await portfolio.save();
         res.json({ portfolio });
