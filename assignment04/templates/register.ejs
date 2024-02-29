@@ -35,10 +35,26 @@
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Register</button>
+                <button type="button" id="fillRandomData" class="btn btn-primary">Fill with Random Data</button>
                 <p class="text-center text-muted mt-1">Already have an account? <a href="/login/">Login</a></p>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('fillRandomData').addEventListener('click', function() {
+        fetch('/ext/random/user')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('firstName').value = data.firstName;
+                document.getElementById('lastName').value = data.lastName;
+                document.getElementById('email').value = data.email;
+                document.getElementById('country').value = data.country;
+                document.getElementById('gender').value = data.gender;
+            })
+            .catch(error => console.error(error));
+    });
+</script>
 
 <%- include("_partial/footer.ejs") %>
