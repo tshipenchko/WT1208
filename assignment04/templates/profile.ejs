@@ -24,9 +24,9 @@
     </h2>
     <% ctx.portfolios.forEach((portfolio) => { %>
         <div class="col">
-            <div class="card">
+            <div class="card mt-2">
                 <% if (portfolio.pictures.length > 0) { %>
-                    <img src="/photo/portfolios/<%= portfolio._id; %>/0" class="card-img-top"
+                    <img src="/uploads/<%= portfolio.pictures[0].filename; %>" class="card-img-top portfolio-cover"
                          alt="<%= portfolio.title; %>">
                 <% } %>
                 <div class="card-body">
