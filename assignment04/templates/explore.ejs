@@ -3,7 +3,7 @@
 <% if (typeof ctx === "undefined") {
     ctx = { portfolios: [{ portfolio: {}, user: {} }] };
     ctx = {};
-}%>
+} %>
 
 <%- include("_partial/header.ejs") %>
 
@@ -11,12 +11,16 @@
     <h1>Explore</h1>
     <div id="portfolio-list">
         <% ctx.portfolios.forEach((item) => { %>
-            <div class="card mb-3">
+            <div class="card mt-2">
+                <% if (item.portfolio.pictures.length > 0) { %>
+                    <img src="/uploads/<%= item.portfolio.pictures[0].filename; %>" class="card-img-top portfolio-cover"
+                         alt="<%= item.portfolio.title; %>">
+                <% } %>
                 <div class="card-body">
                     <h5 class="card-title"><%= item.portfolio.title; %></h5>
                     <h6 class="card-subtitle mb-2 text-muted"><%= item.user.firstName; %> <%= item.user.lastName; %></h6>
                     <p class="card-text"><%= item.portfolio.description; %></p>
-                    <a href="/portfolios/<%= item.portfolio.tag; %>" class="card-link">View Portfolio</a>
+                    <a href="/portfolios/<%= item.portfolio.tag; %>" class="btn btn-primary">View Portfolio</a>
                 </div>
             </div>
         <% }); %>
@@ -34,15 +38,15 @@
 </div>
 
 <script>
-    let skip = 10;
-    const limit = 10;
+    let skip = 5;
+    const limit = 5;
     const portfolioList = document.getElementById('portfolio-list');
     const loading = document.getElementById('loading');
 
     window.onscroll = function() {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
             loading.style.display = 'block';
-            fetch(`/portfolios/?skip=${skip}&limit=${limit}`)
+            fetch(`/explore/portfolios/?skip=${skip}&limit=${limit}`)
                 .then(response => {
                     if (!response.ok) throw new Error('Non 200 response');
                     return response.json();
@@ -53,12 +57,21 @@
                         const card = document.createElement('div');
                         card.className = 'card mb-3';
                         // noinspection JSUnresolvedReference
-                        card.innerHTML = `
+                        card.innerHTML = ""
+
+                        if (item.portfolio.pictures.length > 0) {
+                            card.innerHTML += `
+                                <img src="/uploads/${item.portfolio.pictures[0].filename}" class="card-img-top portfolio-cover"
+                                     alt="${item.portfolio.title}">
+                            `;
+                        }
+
+                        card.innerHTML += `
                             <div class="card-body">
                                 <h5 class="card-title">${item.portfolio.title}</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">${item.user.firstName} ${item.user.lastName}</h6>
                                 <p class="card-text">${item.portfolio.description}</p>
-                                <a href="/portfolios/${item.portfolio.tag}" class="card-link">View Portfolio</a>
+                                <a href="/portfolios/${item.portfolio.tag}" class="btn btn-primary">View Portfolio</a>
                             </div>
                         `;
                         portfolioList.appendChild(card);

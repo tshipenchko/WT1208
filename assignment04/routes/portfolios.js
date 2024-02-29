@@ -8,14 +8,14 @@ router.get("/", (req, res) => {
     res.redirect("/explore/");
 });
 
-router.get("/:id", async (req, res) => {
-    const portfolio = await Portfolio.findById(req.params.id);
+router.get("/:tag", async (req, res) => {
+    const portfolio = await Portfolio.findOne({ tag: req.params.tag }).populate("userId").exec();
     if (!portfolio) {
         res.status(404).send("Portfolio not found");
         return;
     }
 
-    res.render("portfolio", { ctx: { portfolio } });
+    res.render("portfolio", { ctx: { portfolio, user: portfolio.userId } });
 });
 
 router.post("/", async (req, res) => {
