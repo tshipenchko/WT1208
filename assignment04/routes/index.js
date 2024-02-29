@@ -7,6 +7,7 @@ module.exports = {
         app.use("/register", require("./register"));
         app.use("/logout", require("./logout"));
         app.use("/portfolios", require("./portfolios"));
+        app.use("/ext", require("./ext"));
         app.use("/admin", require("./admin"));
     },
 };

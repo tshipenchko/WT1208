@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
 
     await portfolio.save();
 
-    res.redirect(`/portfolios/${portfolio._id}`);
+    res.redirect(`/portfolios/${portfolio.tag}`);
 });
 
 router.get("/:id/edit", async (req, res) => {

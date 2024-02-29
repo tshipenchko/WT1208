@@ -73,6 +73,9 @@
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control" id="description" name="description" required></textarea>
+                        <button type="button" id="generateDescription" class="btn btn-secondary mt-1">Generate Random
+                            Description
+                        </button>
                     </div>
                     <div class="mb-3">
                         <label for="tag" class="form-label">Tag</label>
@@ -80,7 +83,12 @@
                     </div>
                     <div id="pictures">
                         <div class="mb-3 picture-input">
-                            <label for="pictures[0]" class="form-label">Picture 1</label>
+                            <label for="pictures[0]" class="form-label">
+                                Picture 1
+                                <button type="button" id="generateImage" class="btn btn-secondary mt-1">
+                                    Fetch Random Image
+                                </button>
+                            </label>
                             <input type="file" class="form-control" id="pictures[0]" name="pictures[0]" required>
                             <label for="descriptions[0]" class="form-label">Description 1</label>
                             <input type="text" class="form-control" id="descriptions[0]" name="descriptions[0]"
@@ -97,7 +105,14 @@
 
 <script>
     let pictureCount = 1;
-    document.getElementById('addPicture').addEventListener('click', function() {
+    document.getElementById('addPicture').addEventListener('click', () => {
+        const newPictureDivInput = document.createElement('input');
+        newPictureDivInput.type = 'file';
+        newPictureDivInput.className = 'form-control';
+        newPictureDivInput.id = `pictures[${pictureCount}]`;
+        newPictureDivInput.name = `pictures[${pictureCount}]`;
+        newPictureDivInput.required = true;
+
         const picturesDiv = document.getElementById('pictures');
         const newPictureDiv = document.createElement('div');
         newPictureDiv.className = 'mb-3 picture-input';
@@ -105,11 +120,34 @@
             <label for="pictures[${pictureCount}]" class="form-label">
                 Picture ${pictureCount + 1}
                 <button type="button" class="btn btn-danger remove-picture">Remove</button>
+                <span class="for-generate-button"></span>
             </label>
-            <input type="file" class="form-control" id="pictures[${pictureCount}]" name="pictures[${pictureCount}]" required>
+            <span class="for-file-input"></span>
             <label for="descriptions[${pictureCount}]" class="form-label">Description ${pictureCount + 1}</label>
             <input type="text" class="form-control" id="descriptions[${pictureCount}]" name="descriptions[${pictureCount}]" required>
         `;
+
+        const generateImageButton = document.createElement('button');
+        generateImageButton.type = 'button';
+        generateImageButton.id = `generateImage${pictureCount}`;
+        generateImageButton.className = 'btn btn-secondary';
+        generateImageButton.textContent = 'Fetch Random Image';
+
+        newPictureDiv.querySelector('.for-file-input').appendChild(newPictureDivInput);
+        newPictureDiv.querySelector('.for-generate-button').appendChild(generateImageButton);
+
+        generateImageButton.addEventListener('click', () => {
+            fetch('/ext/random/image')
+                .then(response => response.blob())
+                .then(blob => {
+                    const file = new File([blob], "random.jpg", { type: 'image/jpeg' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    newPictureDivInput.files = dataTransfer.files;
+                })
+                .catch(error => console.error(error));
+        });
+
         picturesDiv.appendChild(newPictureDiv);
         pictureCount++;
     });
@@ -119,6 +157,27 @@
             const pictureInput = e.target.parentElement.parentElement;
             pictureInput.parentElement.removeChild(pictureInput);
         }
+    });
+
+    document.getElementById('generateDescription').addEventListener('click', () => {
+        fetch('/ext/random/sentence')
+            .then(response => response.json())
+            .then(sentence => {
+                document.getElementById('description').value = sentence;
+            })
+            .catch(error => console.error(error));
+    });
+
+    document.getElementById('generateImage').addEventListener('click', function() {
+        fetch('/ext/random/image')
+            .then(response => response.blob())
+            .then(blob => {
+                const file = new File([blob], "random.jpg", { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                document.getElementById('pictures[0]').files = dataTransfer.files;
+            })
+            .catch(error => console.error(error));
     });
 </script>
 <%- include("_partial/footer.ejs") %>
