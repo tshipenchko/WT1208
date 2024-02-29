@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Portfolio = require("../models/Portfolio");
 const { requireUser } = require("../models/utils");
-const { generateUUID } = require("../utils");
 const path = require("path");
 
 router.get("/", (req, res) => {
@@ -16,7 +15,7 @@ router.get("/:id", async (req, res) => {
         return;
     }
 
-    res.render("portfolio", { ctx: { active: "profile", portfolio } });
+    res.render("portfolio", { ctx: { portfolio } });
 });
 
 router.post("/", async (req, res) => {

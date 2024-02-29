@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const uuid = require("uuid");
 
 module.exports = {
     requireEnv(name, defaultValue) {
@@ -24,8 +23,5 @@ module.exports = {
     async validatePassword(password, hash) {
         const salt = module.exports.requireEnv("PASSWORD_SALT", "");
         return await bcrypt.compare(`${password}${salt}`, hash);
-    },
-    generateUUID() {
-        return uuid.v4().replaceAll("-", "");
     },
 };
