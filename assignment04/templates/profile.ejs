@@ -2,6 +2,111 @@
 
 <div class="container mt-5">
     <h1>Profile</h1>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Fullname: <%= ctx.user.firstName; %> <%= ctx.user.lastName; %></h5>
+            <p class="card-text">
+                Email: <%= ctx.user.email; %> <br />
+                Country: <%= ctx.user.country; %> <br />
+                Gender: <%= ctx.user.gender; %> <br />
+                Registered at: <%= ctx.user.creationDate.toISOString(); %> <br />
+            </p>
+        </div>
+    </div>
 </div>
 
+<div class="container mt-5">
+    <h2>
+        Your Portfolios
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPortfolioModal">
+            <i class="bi bi-plus-circle"></i> Add Portfolio
+        </button>
+    </h2>
+    <% ctx.portfolios.forEach((portfolio) => { %>
+        <div class="col">
+            <div class="card">
+                <% if (portfolio.pictures.length > 0) { %>
+                    <img src="/photo/portfolios/<%= portfolio._id; %>/0" class="card-img-top"
+                         alt="<%= portfolio.title; %>">
+                <% } %>
+                <div class="card-body">
+                    <h5 class="card-title"><%= portfolio.title; %></h5>
+                    <p class="card-text"><%= portfolio.description; %></p>
+                    <a href="/portfolios/<%= portfolio._id; %>" class="btn btn-primary">View Portfolio</a>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+    <% if (ctx.portfolios.length === 0) { %>
+        <div class="alert alert-warning" role="alert">
+            You don't have any portfolios yet
+        </div>
+    <% } %>
+</div>
+
+<div class="modal fade" id="addPortfolioModal" tabindex="-1" aria-labelledby="addPortfolioModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPortfolioModalLabel">Add Portfolio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/portfolios/" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tag" class="form-label">Tag</label>
+                        <input type="text" class="form-control" id="tag" name="tag" required>
+                    </div>
+                    <div id="pictures">
+                        <div class="mb-3 picture-input">
+                            <label for="pictures[0]" class="form-label">Picture 1</label>
+                            <input type="file" class="form-control" id="pictures[0]" name="pictures[0]" required>
+                            <label for="descriptions[0]" class="form-label">Description 1</label>
+                            <input type="text" class="form-control" id="descriptions[0]" name="descriptions[0]"
+                                   required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary mt-3" id="addPicture">Add another picture</button>
+                    <button type="submit" class="btn btn-primary mt-3">Add Portfolio</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let pictureCount = 1;
+    document.getElementById('addPicture').addEventListener('click', function() {
+        const picturesDiv = document.getElementById('pictures');
+        const newPictureDiv = document.createElement('div');
+        newPictureDiv.className = 'mb-3 picture-input';
+        newPictureDiv.innerHTML = `
+            <label for="pictures[${pictureCount}]" class="form-label">
+                Picture ${pictureCount + 1}
+                <button type="button" class="btn btn-danger remove-picture">Remove</button>
+            </label>
+            <input type="file" class="form-control" id="pictures[${pictureCount}]" name="pictures[${pictureCount}]" required>
+            <label for="descriptions[${pictureCount}]" class="form-label">Description ${pictureCount + 1}</label>
+            <input type="text" class="form-control" id="descriptions[${pictureCount}]" name="descriptions[${pictureCount}]" required>
+        `;
+        picturesDiv.appendChild(newPictureDiv);
+        pictureCount++;
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('remove-picture')) {
+            const pictureInput = e.target.parentElement.parentElement;
+            pictureInput.parentElement.removeChild(pictureInput);
+        }
+    });
+</script>
 <%- include("_partial/footer.ejs") %>

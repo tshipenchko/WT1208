@@ -7,5 +7,6 @@ module.exports = {
         app.use("/login", require("./login"));
         app.use("/register", require("./register"));
         app.use("/logout", require("./logout"));
+        app.use("/portfolios", require("./portfolios"));
     },
 };

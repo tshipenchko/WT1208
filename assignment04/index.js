@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const session = require("express-session");
+const formData = require("express-form-data");
 const mongoose = require("mongoose");
 const { requireEnv, requireEnvInt } = require("./utils");
 const { useRouter } = require("./routes");
@@ -9,7 +10,14 @@ const { useRouter } = require("./routes");
 const app = express();
 
 app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
+app.use(formData.parse({
+    uploadDir: __dirname + "/uploads",
+}));
+app.use(formData.format());
+app.use(formData.stream());
+app.use(formData.union());
 app.set("views", __dirname + "/templates");
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
