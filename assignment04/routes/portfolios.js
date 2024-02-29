@@ -55,7 +55,12 @@ router.post("/", async (req, res) => {
         pictures: pictureObjects,
     });
 
-    await portfolio.save();
+    try {
+        await portfolio.save();
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+        return;
+    }
 
     res.redirect(`/portfolios/${portfolio.tag}`);
 });
